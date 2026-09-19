@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "detector-67"
+version = "0.1.0"
+description = "Detector embarcado da sequência seis sete com ESP32 e FreeRTOS"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26,<3", "scipy>=1.12,<2", "scikit-learn>=1.5,<2",
+  "onnx>=1.16,<2", "onnxruntime>=1.18,<2",
+  "sounddevice>=0.5,<1", "soundfile>=0.12,<1", "pyserial>=3.5,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "platformio==6.1.19"]
+
+[project.scripts]
+detector67 = "detector67.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

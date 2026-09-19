@@ -1,0 +1,7 @@
+{
+  "command": ".venv/Scripts/python.exe -X utf8 -m pytest -q",
+  "passed": 19,
+  "failed": 0,
+  "output": "19 passed in 5.88s",
+  "scope": "Testes automatizados locais de software; não medem a acurácia em fala no hardware."
+}

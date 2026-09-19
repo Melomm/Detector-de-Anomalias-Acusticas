@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="700" viewBox="0 0 1160 700" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitetura FreeRTOS do detector 6 7</title>
+  <desc id="desc">Captura no núcleo 0 escreve no buffer circular. Mutex protege buffer e snapshot. Notificação direta acorda features no núcleo 1, que envia pacotes por uma fila de capacidade dois à tarefa de detecção. A detecção controla o LED.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#334155" stroke-width="1.4"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #172b3a; }
+      .heading { font-size: 20px; font-weight: bold; }
+      .body { font-size: 16px; }
+      .small { font-size: 14px; }
+      .box { fill: #f4f7fa; stroke: #64748b; stroke-width: 1.5; }
+      .task { fill: #eaf3f7; stroke: #245c75; stroke-width: 2; }
+      .sync { fill: #fff7e6; stroke: #946b20; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #334155; stroke-width: 2; marker-end: url(#arrow); }
+      .lock { fill: none; stroke: #946b20; stroke-width: 2; stroke-dasharray: 6 4; }
+    </style>
+  </defs>
+  <rect width="1160" height="700" fill="white"/>
+  <text x="40" y="36" class="heading">Detector 6 7 — tarefas, dados e sincronização</text>
+  <text x="40" y="61" class="small">ESP32-WROOM-32U · prioridades 5 &gt; 3 &gt; 2 · firmware físico</text>
+
+  <rect x="40" y="90" width="290" height="65" rx="5" class="box"/>
+  <text x="58" y="117" class="heading">INMP441 → I2S / DMA</text>
+  <text x="58" y="141" class="body">Driver atende IRQ; 16 kHz mono</text>
+  <path d="M185 155 V190" class="flow"/>
+
+  <rect x="40" y="190" width="290" height="110" rx="5" class="task"/>
+  <text x="58" y="218" class="heading">Task 1 · capture</text>
+  <text x="58" y="244" class="body">Núcleo 0 · prioridade 5</text>
+  <text x="58" y="270" class="body">Leitura bloqueante: 160 amostras</text>
+  <text x="58" y="291" class="small">Um bloco a cada 10 ms</text>
+  <path d="M185 300 V355" class="flow"/>
+
+  <rect x="40" y="355" width="290" height="85" rx="5" class="box"/>
+  <text x="58" y="383" class="heading">Buffer circular + estado</text>
+  <text x="58" y="409" class="body">32.000 amostras · 2 segundos</text>
+  <text x="58" y="431" class="small">Janela nova a cada 250 ms</text>
+
+  <rect x="435" y="190" width="290" height="110" rx="5" class="task"/>
+  <text x="453" y="218" class="heading">Task 2 · features</text>
+  <text x="453" y="244" class="body">Núcleo 1 · prioridade 3</text>
+  <text x="453" y="270" class="body">RMS, centroide, 576 log-Mel</text>
+  <text x="453" y="291" class="small">FFT fora da região protegida</text>
+  <path d="M330 230 H435" class="flow"/>
+  <text x="342" y="117" class="small">Notificação direta</text>
+  <text x="342" y="139" class="small">xTaskNotifyGive / ulTaskNotifyTake</text>
+  <text x="343" y="252" class="small">acorda</text>
+
+  <rect x="435" y="355" width="290" height="85" rx="5" class="box"/>
+  <text x="453" y="383" class="heading">Snapshot exclusivo</text>
+  <text x="453" y="409" class="body">Cópia completa sob mutex</text>
+  <text x="453" y="431" class="small">Libera mutex antes do DSP</text>
+  <path d="M330 396 H435" class="flow"/>
+  <text x="343" y="382" class="small">copia</text>
+  <path d="M580 355 V300" class="flow"/>
+
+  <rect x="830" y="190" width="290" height="110" rx="5" class="sync"/>
+  <text x="848" y="218" class="heading">featuresQueue</text>
+  <text x="848" y="244" class="body">Capacidade: 2 FeaturePacket</text>
+  <text x="848" y="270" class="body">Envio sem espera</text>
+  <text x="848" y="291" class="small">Fila cheia: descarta o mais antigo</text>
+  <path d="M725 245 H830" class="flow"/>
+  <text x="738" y="229" class="small">envia</text>
+  <path d="M975 300 V355" class="flow"/>
+
+  <rect x="830" y="355" width="290" height="110" rx="5" class="task"/>
+  <text x="848" y="383" class="heading">Task 3 · detection</text>
+  <text x="848" y="409" class="body">Núcleo 1 · prioridade 2</text>
+  <text x="848" y="435" class="body">MLP + confirmação temporal</text>
+  <text x="848" y="456" class="small">Recebe com espera de até 20 ms</text>
+  <path d="M975 465 V520" class="flow"/>
+
+  <rect x="830" y="520" width="290" height="70" rx="5" class="box"/>
+  <text x="848" y="548" class="heading">LED GPIO 2 + serial</text>
+  <text x="848" y="573" class="body">Alerta e métricas por janela</text>
+
+  <rect x="435" y="510" width="290" height="80" rx="5" class="sync"/>
+  <text x="453" y="538" class="heading">ringMutex</text>
+  <text x="453" y="564" class="body">Mutex com herança de prioridade</text>
+  <text x="453" y="585" class="small">API de semáforos do FreeRTOS</text>
+  <path d="M185 440 V548 H435" class="lock"/>
+  <path d="M580 440 V510" class="lock"/>
+  <text x="50" y="577" class="small">Tracejado: exclusão mútua</text>
+
+  <text x="40" y="638" class="body">Falha ou reinício da captura → descarta contexto incompleto e reinicia a confirmação de eventos.</text>
+  <text x="40" y="666" class="small">Notificação com contagem substitui um semáforo adicional de disponibilidade; fila copia pacotes por valor.</text>
+</svg>

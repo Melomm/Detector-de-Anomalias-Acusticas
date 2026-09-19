@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "author": "Detector de Anomalias Acusticas",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 40, "left": 40, "attrs": { "cpuFrequency": "max" } },
+    { "type": "wokwi-led", "id": "alert", "top": 55, "left": 310, "attrs": { "color": "red", "label": "Alerta" } },
+    { "type": "wokwi-resistor", "id": "resistor", "top": 130, "left": 260, "attrs": { "value": "220" } },
+    { "type": "wokwi-pushbutton", "id": "next", "top": 220, "left": 250, "attrs": { "color": "blue", "label": "Proximo", "key": "N" } },
+    { "type": "wokwi-pushbutton", "id": "restart", "top": 220, "left": 370, "attrs": { "color": "green", "label": "Reiniciar", "key": "R" } },
+    { "type": "wokwi-pushbutton", "id": "pause", "top": 220, "left": 490, "attrs": { "color": "yellow", "label": "Pausar / retomar", "key": "P" } },
+    { "type": "wokwi-text", "id": "title", "top": -45, "left": 35, "attrs": { "text": "Detector 6 7 | ESP32 + FreeRTOS" } },
+    { "type": "wokwi-text", "id": "source", "top": -5, "left": 245, "attrs": { "text": "Audio em memoria (sem microfone)\nModo e clipe atual no monitor serial" } }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "esp:D2", "resistor:1", "red", [] ],
+    [ "resistor:2", "alert:A", "red", [] ],
+    [ "alert:C", "esp:GND.1", "black", [] ],
+    [ "esp:D18", "next:1.l", "blue", [] ],
+    [ "next:2.l", "esp:GND.1", "black", [] ],
+    [ "esp:D19", "restart:1.l", "green", [] ],
+    [ "restart:2.l", "esp:GND.1", "black", [] ],
+    [ "esp:D23", "pause:1.l", "orange", [] ],
+    [ "pause:2.l", "esp:GND.1", "black", [] ]
+  ],
+  "serialMonitor": { "display": "always", "newline": "lf" }
+}

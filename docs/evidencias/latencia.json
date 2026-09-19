@@ -1,0 +1,49 @@
+{
+  "windows": 65,
+  "capture_read_ms": {
+    "mean": 9.983000000000002,
+    "p95": 9.983,
+    "max": 9.983
+  },
+  "capture_copy_ms": {
+    "mean": 0.0132,
+    "p95": 0.014,
+    "max": 0.014
+  },
+  "features_ms": {
+    "mean": 174.63076923076923,
+    "p95": 174.646,
+    "max": 174.647
+  },
+  "queue_ms": {
+    "mean": 0.041938461538461536,
+    "p95": 0.047,
+    "max": 0.047
+  },
+  "inference_ms": {
+    "mean": 11.057200000000002,
+    "p95": 11.066,
+    "max": 11.069
+  },
+  "pipeline_ms": {
+    "mean": 185.99866153846153,
+    "p95": 186.018,
+    "max": 186.043
+  },
+  "counters_max": {
+    "skipped": 0,
+    "queue_drops": 0,
+    "read_errors": 0
+  },
+  "min_free_heap_bytes": 173472,
+  "source": "Log do ESP32 fisico fornecido pelo autor; chaves normalizadas removendo escapes de Markdown.",
+  "sequence_start": 358,
+  "sequence_end": 422,
+  "timestamp_span_s": 16.0,
+  "window_stride_ms": 250,
+  "events": [
+    368,
+    421
+  ],
+  "scope": "Amostra de 65 janelas; nao constitui prova de pior caso nem taxa de acerto anotada."
+}

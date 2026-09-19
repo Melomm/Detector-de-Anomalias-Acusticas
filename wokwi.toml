@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+firmware = "artifacts/wokwi/firmware.bin"
+elf = "artifacts/wokwi/firmware.elf"
+rfc2217ServerPort = 4000

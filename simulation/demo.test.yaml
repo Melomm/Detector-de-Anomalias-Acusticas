@@ -1,0 +1,28 @@
+name: Demonstracao de tons - controles e alerta
+version: 1
+steps:
+  - wait-serial: "SIM_READY mode=demo"
+  - wait-serial: "DEMO_EVENT:"
+  - expect-pin:
+      part-id: esp
+      pin: D2
+      expected: 1
+  - delay: 500ms
+  - expect-pin:
+      part-id: esp
+      pin: D2
+      expected: 0
+  - set-control:
+      part-id: next
+      control: pressed
+      value: 1
+  - delay: 200ms
+  - set-control:
+      part-id: next
+      control: pressed
+      value: 0
+  - wait-serial: "name=demo_440_isolado paused=0"
+  - write-serial: "p"
+  - wait-serial: "paused=1"
+  - write-serial: "p"
+  - wait-serial: "paused=0"
