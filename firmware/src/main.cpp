@@ -214,6 +214,7 @@ void setup() {
     if (cfg::buzzer >= 0) pinMode(cfg::buzzer, OUTPUT);
     setAlert(false);
     Serial.printf("Detector 6 7 | model_ready=%d | threshold=%.5f\n", MODEL_READY, MODEL_THRESHOLD);
+    Serial.printf("MODEL_ID=%s\n", MODEL_ID);
     Serial.println("Audio: janela de 2 segundos, atualizada a cada 250 ms (4 analises/s).");
 #ifdef SIMULATOR_DEMO
     Serial.println("SIM_READY mode=demo | TONS SINTETICOS | SEM MODELO DE FALA");

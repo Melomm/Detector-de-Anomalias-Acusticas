@@ -2,6 +2,7 @@
 import argparse
 import ctypes
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -23,6 +24,14 @@ def platformio_environment(root):
 def build(root, environment, upload=False, port=None):
     if upload and environment.startswith("wokwi_"):
         raise ValueError("Ambientes wokwi são para simulação. Use detector/recorder na placa física.")
+    if environment == "detector":
+        header = root / "firmware/include/model_data.h"
+        if header.exists():
+            match = re.search(r'^#define MODEL_ID "([a-f0-9]{64})"$', header.read_text(encoding="utf-8"), re.MULTILINE)
+            if match:
+                print(f"Modelo incorporado: MODEL_ID={match.group(1)}", flush=True)
+            else:
+                print("Modelo sem identificador. Execute compilar_modelo.cmd para atualizar a identificação.", flush=True)
     command = [sys.executable, "-m", "platformio", "run", "-d", str(root / "firmware"), "-e", environment, "-j", "2"]
     if upload:
         command += ["-t", "upload"]

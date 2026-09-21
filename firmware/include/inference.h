@@ -17,6 +17,10 @@ static const float MODEL_THRESHOLD = 0.8f;
 static const float MODEL_THRESHOLD = 2.0f;
 #endif
 
+#ifndef MODEL_ID
+#define MODEL_ID "sem-identificador"
+#endif
+
 inline float predict(const float* features) {
 #if defined(SIMULATOR_DEMO)
     return demo::score(features);

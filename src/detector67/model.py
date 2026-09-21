@@ -1,5 +1,6 @@
 """MLP compacto; mesmos pesos em NumPy, ONNX e C++ no ESP32."""
 import json
+import hashlib
 from pathlib import Path
 
 import numpy as np
@@ -63,11 +64,22 @@ def c_array(name, values):
     return f"static const float {name}[{len(values)}] = {{\n" + ",\n".join(lines) + "\n};\n"
 
 
+def model_id(params, threshold):
+    digest = hashlib.sha256()
+    for name in sorted(params):
+        values = np.asarray(params[name], dtype="<f4")
+        digest.update(json.dumps([name, list(values.shape)]).encode("ascii"))
+        digest.update(values.tobytes())
+    digest.update(np.asarray([threshold], dtype="<f4").tobytes())
+    return digest.hexdigest()
+
+
 def export_header(params, threshold, path):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     text = "// GERADO PELO TREINAMENTO. Não editar.\n#pragma once\n"
     text += f"#define MODEL_READY 1\n#define MODEL_HIDDEN {len(params['b1'])}\n"
+    text += f'#define MODEL_ID "{model_id(params, threshold)}"\n'
     text += f"static const float MODEL_THRESHOLD = {threshold:.9e}f;\n"
     for name, data in params.items():
         text += c_array("MODEL_" + name.upper(), data)

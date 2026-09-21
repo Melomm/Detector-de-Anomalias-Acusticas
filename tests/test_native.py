@@ -11,6 +11,16 @@ from detector67.dsp import FEATURES, SAMPLES, extract
 from detector67.model import export, export_header, probability
 
 
+def test_model_identity_tracks_weights_and_threshold():
+    from detector67.model import model_id
+    params = {"w1": np.array([[.1, -.2]], dtype=np.float32), "b1": np.zeros(2, dtype=np.float32)}
+    identity = model_id(params, .5)
+    assert model_id(dict(reversed(list(params.items()))), .5) == identity
+    assert model_id(params, .6) != identity
+    params["w1"][0, 0] += .01
+    assert model_id(params, .5) != identity
+
+
 def test_cpp_dsp_and_inference_match_python(tmp_path):
     compiler = shutil.which("g++") or shutil.which("clang++")
     if not compiler:
